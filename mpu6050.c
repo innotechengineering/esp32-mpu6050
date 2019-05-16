@@ -16,11 +16,11 @@
 
 const char *TAG_MPU6050 = "MPU6050";
 
-#define PI                                  3.14159265358979323846f
-#define GYRO_MEAS_ERROR                     PI * (60.0f / 180.0f)
-#define GYRO_MEAS_DRIFT                     PI * (1.0f / 180.0f)
-#define BETA                                sqrt(3.0f / 4.0f) * GYRO_MEAS_ERROR
-#define ZETA                                sqrt(3.0f / 4.0f) * GYRO_MEAS_DRIFT
+#define PI              3.14159265358979323846f
+#define GYRO_MEAS_ERROR PI * (60.0f / 180.0f)
+#define GYRO_MEAS_DRIFT PI * (1.0f / 180.0f)
+#define BETA            sqrt(3.0f / 4.0f) * GYRO_MEAS_ERROR
+#define ZETA            sqrt(3.0f / 4.0f) * GYRO_MEAS_DRIFT
 
 float quart[4] = {1.0f, 0.0f, 0.0f, 0.0f};
 float delta_t = 0.0f;
@@ -48,394 +48,778 @@ const char* mpu6050_get_tag()
 
 uint8_t mpu6050_get_aux_vddio_level()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_YG_OFFS_TC, MPU6050_TC_PWR_MODE_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_YG_OFFS_TC,
+        MPU6050_TC_PWR_MODE_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_aux_vddio_level(uint8_t level)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_YG_OFFS_TC, MPU6050_TC_PWR_MODE_BIT, level);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_YG_OFFS_TC,
+        MPU6050_TC_PWR_MODE_BIT,
+        level
+    );
 }
 
 uint8_t mpu6050_get_rate()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_SMPLRT_DIV, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SMPLRT_DIV,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_rate(uint8_t rate)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_SMPLRT_DIV, rate);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SMPLRT_DIV,
+        rate
+    );
 }
 
 uint8_t mpu6050_get_external_frame_sync()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_CONFIG, MPU6050_CFG_EXT_SYNC_SET_BIT, MPU6050_CFG_EXT_SYNC_SET_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_CONFIG,
+        MPU6050_CFG_EXT_SYNC_SET_BIT,
+        MPU6050_CFG_EXT_SYNC_SET_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_external_frame_sync(uint8_t sync)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_CONFIG, MPU6050_CFG_EXT_SYNC_SET_BIT, MPU6050_CFG_EXT_SYNC_SET_LENGTH, sync);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_CONFIG,
+        MPU6050_CFG_EXT_SYNC_SET_BIT,
+        MPU6050_CFG_EXT_SYNC_SET_LENGTH,
+        sync
+    );
 }
 
 uint8_t mpu6050_get_dlpf_mode()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_CONFIG, MPU6050_CFG_DLPF_CFG_BIT, MPU6050_CFG_DLPF_CFG_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_CONFIG,
+        MPU6050_CFG_DLPF_CFG_BIT,
+        MPU6050_CFG_DLPF_CFG_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_dlpf_mode(uint8_t mode)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_CONFIG, MPU6050_CFG_DLPF_CFG_BIT, MPU6050_CFG_DLPF_CFG_LENGTH, mode);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_CONFIG,
+        MPU6050_CFG_DLPF_CFG_BIT,
+        MPU6050_CFG_DLPF_CFG_LENGTH,
+        mode
+    );
 }
 
 uint8_t mpu6050_get_full_scale_gyro_range()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT, MPU6050_GCONFIG_FS_SEL_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_GYRO_CONFIG,
+        MPU6050_GCONFIG_FS_SEL_BIT,
+        MPU6050_GCONFIG_FS_SEL_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_full_scale_gyro_range(uint8_t range)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT, MPU6050_GCONFIG_FS_SEL_LENGTH, range);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_GYRO_CONFIG,
+        MPU6050_GCONFIG_FS_SEL_BIT,
+        MPU6050_GCONFIG_FS_SEL_LENGTH,
+        range
+    );
 }
 
 uint8_t mpu6050_get_accel_x_self_test_factory_trim()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_SELF_TEST_X, &buffer[0]);
-	esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_SELF_TEST_A, &buffer[1]);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SELF_TEST_X,
+        &buffer[0]
+    );
+	esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SELF_TEST_A,
+        &buffer[1]
+    );
 
     return ((buffer[0] >> 3) | ((buffer[1] >> 4) & 0x03));
 }
 
 uint8_t mpu6050_get_accel_y_self_test_factory_trim()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_SELF_TEST_Y, &buffer[0]);
-	esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_SELF_TEST_A, &buffer[1]);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SELF_TEST_Y,
+        &buffer[0]
+    );
+	esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SELF_TEST_A,
+        &buffer[1]
+    );
 
     return ((buffer[0] >> 3) | ((buffer[1] >> 2) & 0x03));
 }
 
 uint8_t mpu6050_get_accel_z_self_test_factory_trim()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_SELF_TEST_Z, 2, buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SELF_TEST_Z,
+        2,
+        buffer
+    );
 
     return ((buffer[0] >> 3) | (buffer[1] & 0x03));
 }
 
 uint8_t mpu6050_get_gyro_x_self_test_factory_trim()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_SELF_TEST_X, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SELF_TEST_X,
+        buffer
+    );
 
     return ((buffer[0] & 0x1F));
 }
 
 uint8_t mpu6050_get_gyro_y_self_test_factory_trim()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_SELF_TEST_Y, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SELF_TEST_Y,
+        buffer
+    );
 
     return ((buffer[0] & 0x1F));
 }
 
 uint8_t mpu6050_get_gyro_z_self_test_factory_trim()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_SELF_TEST_Z, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SELF_TEST_Z,
+        buffer
+    );
 
     return ((buffer[0] & 0x1F));
 }
 
 bool mpu6050_get_accel_x_self_test()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_ACCEL_CONFIG, MPU6050_ACONFIG_XA_ST_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_CONFIG,
+        MPU6050_ACONFIG_XA_ST_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_accel_x_self_test(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_ACCEL_CONFIG, MPU6050_ACONFIG_XA_ST_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_CONFIG,
+        MPU6050_ACONFIG_XA_ST_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_accel_y_self_test()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_ACCEL_CONFIG, MPU6050_ACONFIG_YA_ST_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_CONFIG,
+        MPU6050_ACONFIG_YA_ST_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_accel_y_self_test(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_ACCEL_CONFIG, MPU6050_ACONFIG_YA_ST_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_CONFIG,
+        MPU6050_ACONFIG_YA_ST_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_accel_z_self_test()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_ACCEL_CONFIG, MPU6050_ACONFIG_ZA_ST_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_CONFIG,
+        MPU6050_ACONFIG_ZA_ST_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_accel_z_self_test(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_ACCEL_CONFIG, MPU6050_ACONFIG_ZA_ST_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_CONFIG,
+        MPU6050_ACONFIG_ZA_ST_BIT,
+        enabled
+    );
 }
 
 uint8_t mpu6050_get_full_scale_accel_range()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_ACCEL_CONFIG, MPU6050_ACONFIG_AFS_SEL_BIT, MPU6050_ACONFIG_AFS_SEL_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_CONFIG,
+        MPU6050_ACONFIG_AFS_SEL_BIT,
+        MPU6050_ACONFIG_AFS_SEL_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_full_scale_accel_range(uint8_t range)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_ACCEL_CONFIG, MPU6050_ACONFIG_AFS_SEL_BIT, MPU6050_ACONFIG_AFS_SEL_LENGTH, range);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_CONFIG,
+        MPU6050_ACONFIG_AFS_SEL_BIT, MPU6050_ACONFIG_AFS_SEL_LENGTH,
+        range);
 }
 
 uint8_t mpu6050_get_dhpf_mode()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_ACCEL_CONFIG, MPU6050_ACONFIG_ACCEL_HPF_BIT, MPU6050_ACONFIG_ACCEL_HPF_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_CONFIG,
+        MPU6050_ACONFIG_ACCEL_HPF_BIT, MPU6050_ACONFIG_ACCEL_HPF_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_dhpf_mode(uint8_t mode)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_ACCEL_CONFIG, MPU6050_ACONFIG_ACCEL_HPF_BIT, MPU6050_ACONFIG_ACCEL_HPF_LENGTH, mode);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_CONFIG,
+        MPU6050_ACONFIG_ACCEL_HPF_BIT,
+        MPU6050_ACONFIG_ACCEL_HPF_LENGTH,
+        mode
+    );
 }
 
 uint8_t mpu6050_get_freefall_detection_threshold()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_FF_THR, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FF_THR,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_freefall_detection_threshold(uint8_t threshold)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_FF_THR, threshold);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FF_THR,
+        threshold
+    );
 }
 
 uint8_t mpu6050_get_freefall_detection_duration()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_FF_DUR, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FF_DUR,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_freefall_detection_duration(uint8_t duration)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_FF_DUR, duration);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FF_DUR,
+        duration
+    );
 }
 
 uint8_t mpu6050_get_motion_detection_threshold()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_MOT_THR, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_THR,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_motion_detection_threshold(uint8_t threshold)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_MOT_THR, threshold);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_THR,
+        threshold
+    );
 }
 
 uint8_t mpu6050_get_motion_detection_duration()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_MOT_DUR, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DUR,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_motion_detection_duration(uint8_t duration)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_MOT_DUR, duration);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DUR,
+        duration
+    );
 }
 
 uint8_t mpu6050_get_zero_motion_detection_threshold()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_ZRMOT_THR, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ZRMOT_THR,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_zero_motion_detection_threshold(uint8_t threshold)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_ZRMOT_THR, threshold);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ZRMOT_THR,
+        threshold
+    );
 }
 
 uint8_t mpu6050_get_zero_motion_detection_duration()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_ZRMOT_DUR, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ZRMOT_DUR,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_zero_motion_detection_duration(uint8_t duration)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_ZRMOT_DUR, duration);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ZRMOT_DUR,
+        duration
+    );
 }
 
 bool mpu6050_get_temp_fifo_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_TEMP_FIFO_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_TEMP_FIFO_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_temp_fifo_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_TEMP_FIFO_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_TEMP_FIFO_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_x_gyro_fifo_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_XG_FIFO_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_XG_FIFO_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_x_gyro_fifo_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_XG_FIFO_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_XG_FIFO_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_y_gyro_fifo_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_YG_FIFO_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_YG_FIFO_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_y_gyro_fifo_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_YG_FIFO_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_YG_FIFO_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_z_gyro_fifo_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_ZG_FIFO_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_ZG_FIFO_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_z_gyro_fifo_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_ZG_FIFO_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_ZG_FIFO_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_accel_fifo_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_ACCEL_FIFO_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_ACCEL_FIFO_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_accel_fifo_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_ACCEL_FIFO_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_ACCEL_FIFO_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_slave_2_fifo_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_SLV2_FIFO_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_SLV2_FIFO_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_2_fifo_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_SLV2_FIFO_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_SLV2_FIFO_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_slave_1_fifo_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_SLV1_FIFO_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_SLV1_FIFO_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_1_fifo_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_SLV1_FIFO_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_SLV1_FIFO_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_slave_0_fifo_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_SLV0_FIFO_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_SLV0_FIFO_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_0_fifo_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_FIFO_EN, MPU6050_SLV0_FIFO_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_EN,
+        MPU6050_SLV0_FIFO_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_multi_master_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_CTRL, MPU6050_MULT_MST_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_CTRL,
+        MPU6050_MULT_MST_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_multi_master_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_CTRL, MPU6050_MULT_MST_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_CTRL,
+        MPU6050_MULT_MST_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_wait_for_external_sensor_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_CTRL, MPU6050_WAIT_FOR_ES_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_CTRL,
+        MPU6050_WAIT_FOR_ES_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_wait_for_external_sensor_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_CTRL, MPU6050_WAIT_FOR_ES_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_CTRL,
+        MPU6050_WAIT_FOR_ES_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_slave_3_fifo_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_CTRL, MPU6050_SLV_3_FIFO_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_CTRL,
+        MPU6050_SLV_3_FIFO_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_3_fifo_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_CTRL, MPU6050_SLV_3_FIFO_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_CTRL,
+        MPU6050_SLV_3_FIFO_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_slave_read_write_transition_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_CTRL, MPU6050_I2C_MST_P_NSR_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_CTRL,
+        MPU6050_I2C_MST_P_NSR_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_read_write_transition_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_CTRL, MPU6050_I2C_MST_P_NSR_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_CTRL,
+        MPU6050_I2C_MST_P_NSR_BIT,
+        enabled
+    );
 }
 
 uint8_t mpu6050_get_master_clock_speed()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_CTRL, MPU6050_I2C_MST_CLK_BIT, MPU6050_I2C_MST_CLK_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_CTRL,
+        MPU6050_I2C_MST_CLK_BIT,
+        MPU6050_I2C_MST_CLK_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_master_clock_speed(uint8_t speed)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_CTRL, MPU6050_I2C_MST_CLK_BIT, MPU6050_I2C_MST_CLK_LENGTH, speed);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_CTRL,
+        MPU6050_I2C_MST_CLK_BIT,
+        MPU6050_I2C_MST_CLK_LENGTH,
+        speed
+    );
 }
 
 uint8_t mpu6050_get_slave_address(uint8_t num)
@@ -443,7 +827,12 @@ uint8_t mpu6050_get_slave_address(uint8_t num)
     if (num > 3)
         return (0);
 
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_ADDR + num * 3, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_ADDR + num * 3,
+        buffer
+    );
 
     return (buffer[0]);
 }
@@ -453,7 +842,12 @@ void mpu6050_set_slave_address(uint8_t num, uint8_t address)
     if (num > 3)
         return;
 
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_ADDR + num * 3, address);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_ADDR + num * 3,
+        address
+    );
 }
 
 uint8_t mpu6050_get_slave_register(uint8_t num)
@@ -461,7 +855,12 @@ uint8_t mpu6050_get_slave_register(uint8_t num)
     if (num > 3)
         return (0);
 
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_REG + num * 3, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_REG + num * 3,
+        buffer
+    );
 
     return (buffer[0]);
 }
@@ -471,7 +870,12 @@ void mpu6050_set_slave_register(uint8_t num, uint8_t reg)
     if (num > 3)
         return;
 
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_REG + num * 3, reg);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_REG + num * 3,
+        reg
+    );
 }
 
 bool mpu6050_get_slave_enabled(uint8_t num)
@@ -479,7 +883,13 @@ bool mpu6050_get_slave_enabled(uint8_t num)
     if (num > 3)
         return (0);
 
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3,
+        MPU6050_I2C_SLV_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
@@ -489,7 +899,13 @@ void mpu6050_set_slave_enabled(uint8_t num, bool enabled)
     if (num > 3)
         return;
 
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3,
+        MPU6050_I2C_SLV_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_slave_word_byte_swap(uint8_t num)
@@ -497,7 +913,13 @@ bool mpu6050_get_slave_word_byte_swap(uint8_t num)
     if (num > 3)
         return (0);
 
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_BYTE_SW_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3,
+        MPU6050_I2C_SLV_BYTE_SW_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
@@ -507,7 +929,13 @@ void mpu6050_set_slave_word_byte_swap(uint8_t num, bool enabled)
     if (num > 3)
         return;
 
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_BYTE_SW_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3,
+        MPU6050_I2C_SLV_BYTE_SW_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_slave_write_mode(uint8_t num)
@@ -515,7 +943,13 @@ bool mpu6050_get_slave_write_mode(uint8_t num)
     if (num > 3)
         return (0);
 
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_REG_DIS_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3,
+        MPU6050_I2C_SLV_REG_DIS_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
@@ -525,7 +959,13 @@ void mpu6050_set_slave_write_mode(uint8_t num, bool mode)
     if (num > 3)
         return;
 
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_REG_DIS_BIT, mode);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3,
+        MPU6050_I2C_SLV_REG_DIS_BIT,
+        mode
+    );
 }
 
 bool mpu6050_get_slave_word_group_offset(uint8_t num)
@@ -533,7 +973,13 @@ bool mpu6050_get_slave_word_group_offset(uint8_t num)
     if (num > 3)
         return (0);
 
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_GRP_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3,
+        MPU6050_I2C_SLV_GRP_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
@@ -543,7 +989,13 @@ void mpu6050_set_slave_word_group_offset(uint8_t num, bool enabled)
     if (num > 3)
         return;
 
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_GRP_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3,
+        MPU6050_I2C_SLV_GRP_BIT,
+        enabled
+    );
 }
 
 uint8_t mpu6050_get_slave_data_length(uint8_t num)
@@ -551,7 +1003,14 @@ uint8_t mpu6050_get_slave_data_length(uint8_t num)
     if (num > 3)
         return (0);
 
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_LEN_BIT, MPU6050_I2C_SLV_LEN_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3,
+        MPU6050_I2C_SLV_LEN_BIT,
+        MPU6050_I2C_SLV_LEN_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
@@ -561,430 +1020,741 @@ void mpu6050_set_slave_data_length(uint8_t num, uint8_t length)
     if (num > 3)
         return;
 
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_LEN_BIT, MPU6050_I2C_SLV_LEN_LENGTH, length);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_CTRL + num * 3,
+        MPU6050_I2C_SLV_LEN_BIT,
+        MPU6050_I2C_SLV_LEN_LENGTH,
+        length
+    );
 }
 
 uint8_t mpu6050_get_slave_4_address()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_ADDR, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_ADDR,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_4_address(uint8_t address)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_ADDR, address);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_ADDR,
+        address
+    );
 }
 
 uint8_t mpu6050_get_slave_4_register()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_REG, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_REG,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_4_register(uint8_t reg)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_REG, reg);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_REG,
+        reg
+    );
 }
 
 void mpu6050_set_slave_4_output_byte(uint8_t data)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_DO, data);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_DO,
+        data
+    );
 }
 
 bool mpu6050_get_slave_4_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_CTRL, MPU6050_I2C_SLV4_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_CTRL,
+        MPU6050_I2C_SLV4_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_4_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_CTRL, MPU6050_I2C_SLV4_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_CTRL,
+        MPU6050_I2C_SLV4_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_slave_4_interrupt_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_CTRL,
-    MPU6050_I2C_SLV4_INT_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_CTRL,
+        MPU6050_I2C_SLV4_INT_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_4_interrupt_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_CTRL,
-    MPU6050_I2C_SLV4_INT_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_CTRL,
+        MPU6050_I2C_SLV4_INT_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_slave_4_write_mode()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_CTRL,
-    MPU6050_I2C_SLV4_REG_DIS_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_CTRL,
+        MPU6050_I2C_SLV4_REG_DIS_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_4_write_mode(bool mode)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_CTRL,
-    MPU6050_I2C_SLV4_REG_DIS_BIT, mode);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_CTRL,
+        MPU6050_I2C_SLV4_REG_DIS_BIT,
+        mode
+    );
 }
 
 uint8_t mpu6050_get_slave_4_master_delay()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_CTRL,
-    MPU6050_I2C_SLV4_MST_DLY_BIT, MPU6050_I2C_SLV4_MST_DLY_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_CTRL,
+        MPU6050_I2C_SLV4_MST_DLY_BIT,
+        MPU6050_I2C_SLV4_MST_DLY_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_4_master_delay(uint8_t delay)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_CTRL,
-    MPU6050_I2C_SLV4_MST_DLY_BIT, MPU6050_I2C_SLV4_MST_DLY_LENGTH, delay);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_CTRL,
+        MPU6050_I2C_SLV4_MST_DLY_BIT,
+        MPU6050_I2C_SLV4_MST_DLY_LENGTH,
+        delay
+    );
 }
 
 uint8_t mpu6050_get_slave_4_input_byte()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV4_DI, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV4_DI,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_passthrough_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_STATUS,
-    MPU6050_MST_PASS_THROUGH_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_STATUS,
+        MPU6050_MST_PASS_THROUGH_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_slave_4_is_done()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_STATUS,
-    MPU6050_MST_I2C_SLV4_DONE_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_STATUS,
+        MPU6050_MST_I2C_SLV4_DONE_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_lost_arbitration()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_STATUS,
-    MPU6050_MST_I2C_LOST_ARB_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_STATUS,
+        MPU6050_MST_I2C_LOST_ARB_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_slave_4_nack()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_STATUS,
-    MPU6050_MST_I2C_SLV4_NACK_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_STATUS,
+        MPU6050_MST_I2C_SLV4_NACK_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_slave_3_nack()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_STATUS,
-    MPU6050_MST_I2C_SLV3_NACK_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_STATUS,
+        MPU6050_MST_I2C_SLV3_NACK_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_slave_2_nack()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_STATUS,
-    MPU6050_MST_I2C_SLV2_NACK_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_STATUS,
+        MPU6050_MST_I2C_SLV2_NACK_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_slave_1_nack()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_STATUS,
-    MPU6050_MST_I2C_SLV1_NACK_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_STATUS,
+        MPU6050_MST_I2C_SLV1_NACK_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_slave_0_nack()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_STATUS,
-    MPU6050_MST_I2C_SLV0_NACK_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_STATUS,
+        MPU6050_MST_I2C_SLV0_NACK_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_interrupt_mode()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_INT_LEVEL_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_INT_LEVEL_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_interrupt_mode(bool mode)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_INT_LEVEL_BIT, mode);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_INT_LEVEL_BIT,
+        mode
+    );
 }
 
 bool mpu6050_get_interrupt_drive()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_INT_OPEN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_INT_OPEN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_interrupt_drive(bool drive)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_INT_OPEN_BIT, drive);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_INT_OPEN_BIT,
+        drive
+    );
 }
 
 bool mpu6050_get_interrupt_latch()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_LATCH_INT_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_LATCH_INT_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_interrupt_latch(bool latch)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_LATCH_INT_EN_BIT, latch);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_LATCH_INT_EN_BIT,
+        latch
+    );
 }
 
 bool mpu6050_get_interrupt_latch_clear()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_INT_RD_CLEAR_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_INT_RD_CLEAR_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_interrupt_latch_clear(bool clear)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_INT_RD_CLEAR_BIT, clear);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_INT_RD_CLEAR_BIT,
+        clear
+    );
 }
 
 bool mpu6050_get_fsync_interrupt_level()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_FSYNC_INT_LEVEL_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_FSYNC_INT_LEVEL_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_fsync_interrupt_level(bool level)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_FSYNC_INT_LEVEL_BIT, level);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_FSYNC_INT_LEVEL_BIT,
+        level
+    );
 }
 
 bool mpu6050_get_fsync_interrupt_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_FSYNC_INT_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_FSYNC_INT_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_fsync_interrupt_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_FSYNC_INT_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_FSYNC_INT_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_i2c_bypass_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_I2C_BYPASS_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_I2C_BYPASS_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_i2c_bypass_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_I2C_BYPASS_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_I2C_BYPASS_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_clock_output_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_CLKOUT_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_CLKOUT_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_clock_output_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_PIN_CFG,
-    MPU6050_INTCFG_CLKOUT_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_PIN_CFG,
+        MPU6050_INTCFG_CLKOUT_EN_BIT,
+        enabled
+    );
 }
 
 uint8_t mpu6050_get_int_enabled()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_int_enabled(uint8_t enabled)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE, enabled);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        enabled
+    );
 }
 
 bool mpu6050_get_int_freefall_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_FF_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_FF_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_int_freefall_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_FF_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_FF_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_int_motion_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_MOT_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_MOT_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_int_motion_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_MOT_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_MOT_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_int_zero_motion_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_ZMOT_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_ZMOT_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_int_zero_motion_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_ZMOT_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_ZMOT_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_int_fifo_buffer_overflow_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_FIFO_OFLOW_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_FIFO_OFLOW_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_int_fifo_buffer_overflow_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_FIFO_OFLOW_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_FIFO_OFLOW_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_int_i2c_master_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_I2C_MST_INT_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_I2C_MST_INT_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_int_i2c_master_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_I2C_MST_INT_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_I2C_MST_INT_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_int_data_ready_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_DATA_RDY_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_DATA_RDY_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_int_data_ready_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_DATA_RDY_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_DATA_RDY_BIT,
+        enabled
+    );
 }
 
 uint8_t mpu6050_get_int_status()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_INT_STATUS, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_STATUS,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_int_freefall_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_STATUS,
-    MPU6050_INTERRUPT_FF_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_STATUS,
+        MPU6050_INTERRUPT_FF_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_int_motion_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_STATUS,
-    MPU6050_INTERRUPT_MOT_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_STATUS,
+        MPU6050_INTERRUPT_MOT_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_int_zero_motion_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_STATUS,
-    MPU6050_INTERRUPT_ZMOT_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_STATUS,
+        MPU6050_INTERRUPT_ZMOT_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_int_fifo_buffer_overflow_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_STATUS,
-    MPU6050_INTERRUPT_FIFO_OFLOW_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_STATUS,
+        MPU6050_INTERRUPT_FIFO_OFLOW_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_int_i2c_master_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_STATUS,
-    MPU6050_INTERRUPT_I2C_MST_INT_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_STATUS,
+        MPU6050_INTERRUPT_I2C_MST_INT_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_int_data_ready_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_STATUS,
-    MPU6050_INTERRUPT_DATA_RDY_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_STATUS,
+        MPU6050_INTERRUPT_DATA_RDY_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_get_acceleration(mpu6050_acceleration_t* data)
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_ACCEL_XOUT_H, 6,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_XOUT_H,
+        6,
+        buffer
+    );
     data->accel_x = (((int16_t) buffer[0]) << 8) | buffer[1];
     data->accel_y = (((int16_t) buffer[2]) << 8) | buffer[3];
     data->accel_z = (((int16_t) buffer[4]) << 8) | buffer[5];
@@ -992,40 +1762,65 @@ void mpu6050_get_acceleration(mpu6050_acceleration_t* data)
 
 int16_t mpu6050_get_acceleration_x()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_ACCEL_XOUT_H, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_XOUT_H,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 int16_t mpu6050_get_acceleration_y()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_ACCEL_YOUT_H, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_YOUT_H,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 int16_t mpu6050_get_acceleration_z()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_ACCEL_ZOUT_H, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_ZOUT_H,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 int16_t mpu6050_get_temperature()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_TEMP_OUT_H, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_TEMP_OUT_H,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 void mpu6050_get_rotation(mpu6050_rotation_t* data)
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_GYRO_XOUT_H , 6,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_GYRO_XOUT_H,
+        6,
+        buffer
+    );
     data->gyro_x = (((int16_t) buffer[0]) << 8) | buffer[1];
     data->gyro_y = (((int16_t) buffer[2]) << 8) | buffer[3];
     data->gyro_z = (((int16_t) buffer[4]) << 8) | buffer[5];
@@ -1033,33 +1828,56 @@ void mpu6050_get_rotation(mpu6050_rotation_t* data)
 
 int16_t mpu6050_get_rotation_x()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_GYRO_XOUT_H, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_GYRO_XOUT_H,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 int16_t mpu6050_get_rotation_y()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_GYRO_YOUT_H, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_GYRO_YOUT_H,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 int16_t mpu6050_get_rotation_z()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_GYRO_ZOUT_H, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_GYRO_ZOUT_H,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
-void mpu6050_get_motion(mpu6050_acceleration_t* data_accel,
-mpu6050_rotation_t* data_gyro)
+void mpu6050_get_motion
+(
+    mpu6050_acceleration_t* data_accel,
+    mpu6050_rotation_t* data_gyro
+)
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_ACCEL_XOUT_H, 14,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ACCEL_XOUT_H,
+        14,
+        buffer
+    );
 
     data_accel->accel_x = (((int16_t) buffer[0]) << 8) | buffer[1];
     data_accel->accel_y = (((int16_t) buffer[2]) << 8) | buffer[3];
@@ -1071,89 +1889,147 @@ mpu6050_rotation_t* data_gyro)
 
 uint8_t mpu6050_get_external_sensor_byte(int position)
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_EXT_SENS_DATA_00 +
-    position, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_EXT_SENS_DATA_00 + position, 
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 uint16_t mpu6050_get_external_sensor_word(int position)
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_EXT_SENS_DATA_00 +
-    position, 2, buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_EXT_SENS_DATA_00 + position,
+        2,
+        buffer
+    );
 
     return ((((uint16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 uint32_t mpu6050_get_external_sensor_dword(int position)
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_EXT_SENS_DATA_00 +
-    position, 4, buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_EXT_SENS_DATA_00 + position,
+        4,
+        buffer
+    );
 
-    return ((((uint32_t) buffer[0]) << 24) | (((uint32_t) buffer[1]) << 16) |
-    (((uint16_t) buffer[2]) << 8) | buffer[3]);
+    return
+    (
+        (((uint32_t) buffer[0]) << 24) |
+        (((uint32_t) buffer[1]) << 16) |
+        (((uint16_t) buffer[2]) << 8) |
+        buffer[3]
+    );
 }
 
 uint8_t mpu6050_get_motion_status()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_STATUS,
-    buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_STATUS,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_x_negative_motion_detected()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_STATUS,
-    MPU6050_MOTION_MOT_XNEG_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_STATUS,
+        MPU6050_MOTION_MOT_XNEG_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_x_positive_motion_detected()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_STATUS,
-    MPU6050_MOTION_MOT_XPOS_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_STATUS,
+        MPU6050_MOTION_MOT_XPOS_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_y_negative_motion_detected()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_STATUS,
-    MPU6050_MOTION_MOT_YNEG_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_STATUS,
+        MPU6050_MOTION_MOT_YNEG_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_y_positive_motion_detected()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_STATUS,
-    MPU6050_MOTION_MOT_YPOS_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_STATUS,
+        MPU6050_MOTION_MOT_YPOS_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_z_negative_motion_detected()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_STATUS,
-    MPU6050_MOTION_MOT_ZNEG_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_STATUS,
+        MPU6050_MOTION_MOT_ZNEG_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_z_positive_motion_detected()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_STATUS,
-    MPU6050_MOTION_MOT_ZPOS_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_STATUS,
+        MPU6050_MOTION_MOT_ZPOS_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_zero_motion_detected()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_STATUS,
-    MPU6050_MOTION_MOT_ZRMOT_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_STATUS,
+        MPU6050_MOTION_MOT_ZRMOT_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
@@ -1163,22 +2039,36 @@ void mpu6050_set_slave_output_byte(uint8_t num, uint8_t data)
     if (num > 3)
         return;
 
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_I2C_SLV0_DO + num,
-    data);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_SLV0_DO + num,
+        data
+    );
 }
 
 bool mpu6050_get_external_shadow_delay_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_DELAY_CTRL,
-    MPU6050_DLYCTRL_DELAY_ES_SHADOW_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_DELAY_CTRL,
+        MPU6050_DLYCTRL_DELAY_ES_SHADOW_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_external_shadow_delay_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_DELAY_CTRL,
-    MPU6050_DLYCTRL_DELAY_ES_SHADOW_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_DELAY_CTRL,
+        MPU6050_DLYCTRL_DELAY_ES_SHADOW_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_slave_delay_enabled(uint8_t num)
@@ -1186,633 +2076,1110 @@ bool mpu6050_get_slave_delay_enabled(uint8_t num)
     if (num > 4)
         return (0);
 
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_DELAY_CTRL,
-    num, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_DELAY_CTRL,
+        num,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_slave_delay_enabled(uint8_t num, bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_I2C_MST_DELAY_CTRL,
-    num, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_I2C_MST_DELAY_CTRL,
+        num,
+        enabled
+    );
 }
 
 void mpu6050_reset_gyroscope_path()
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_SIGNAL_PATH_RESET,
-    MPU6050_PATHRESET_GYRO_RESET_BIT, 1);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SIGNAL_PATH_RESET,
+        MPU6050_PATHRESET_GYRO_RESET_BIT,
+        1
+    );
 }
 
 void mpu6050_reset_accelerometer_path()
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_SIGNAL_PATH_RESET,
-    MPU6050_PATHRESET_ACCEL_RESET_BIT, 1);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SIGNAL_PATH_RESET,
+        MPU6050_PATHRESET_ACCEL_RESET_BIT,
+        1
+    );
 }
 
 void mpu6050_reset_temperature_path()
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_SIGNAL_PATH_RESET,
-    MPU6050_PATHRESET_TEMP_RESET_BIT, 1);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_SIGNAL_PATH_RESET,
+        MPU6050_PATHRESET_TEMP_RESET_BIT,
+        1
+    );
 }
 
 uint8_t mpu6050_get_accelerometer_power_on_delay()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_CTRL,
-    MPU6050_DETECT_ACCEL_DELAY_BIT, MPU6050_DETECT_ACCEL_DELAY_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_CTRL,
+        MPU6050_DETECT_ACCEL_DELAY_BIT,
+        MPU6050_DETECT_ACCEL_DELAY_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_accelerometer_power_on_delay(uint8_t delay)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_CTRL,
-    MPU6050_DETECT_ACCEL_DELAY_BIT, MPU6050_DETECT_ACCEL_DELAY_LENGTH, delay);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_CTRL,
+        MPU6050_DETECT_ACCEL_DELAY_BIT,
+        MPU6050_DETECT_ACCEL_DELAY_LENGTH,
+        delay
+    );
 }
 
 uint8_t mpu6050_get_freefall_detection_counter_decrement()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_CTRL,
-    MPU6050_DETECT_FF_COUNT_BIT, MPU6050_DETECT_FF_COUNT_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_CTRL,
+        MPU6050_DETECT_FF_COUNT_BIT,
+        MPU6050_DETECT_FF_COUNT_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_freefall_detection_counter_decrement(uint8_t decrement)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_CTRL,
-    MPU6050_DETECT_FF_COUNT_BIT, MPU6050_DETECT_FF_COUNT_LENGTH, decrement);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_CTRL,
+        MPU6050_DETECT_FF_COUNT_BIT,
+        MPU6050_DETECT_FF_COUNT_LENGTH,
+        decrement
+    );
 }
 
 uint8_t mpu6050_get_motion_detection_counter_decrement()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_CTRL,
-    MPU6050_DETECT_MOT_COUNT_BIT, MPU6050_DETECT_MOT_COUNT_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_CTRL,
+        MPU6050_DETECT_MOT_COUNT_BIT,
+        MPU6050_DETECT_MOT_COUNT_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_motion_detection_counter_decrement(uint8_t decrement)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_MOT_DETECT_CTRL,
-    MPU6050_DETECT_MOT_COUNT_BIT, MPU6050_DETECT_MOT_COUNT_LENGTH, decrement);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_MOT_DETECT_CTRL,
+        MPU6050_DETECT_MOT_COUNT_BIT,
+        MPU6050_DETECT_MOT_COUNT_LENGTH,
+        decrement
+    );
 }
 
 bool mpu6050_get_fifo_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_USER_CTRL,
-    MPU6050_USERCTRL_FIFO_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_USER_CTRL,
+        MPU6050_USERCTRL_FIFO_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_fifo_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_USER_CTRL,
-    MPU6050_USERCTRL_FIFO_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_USER_CTRL,
+        MPU6050_USERCTRL_FIFO_EN_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_i2c_master_mode_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_USER_CTRL,
-    MPU6050_USERCTRL_I2C_MST_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_USER_CTRL,
+        MPU6050_USERCTRL_I2C_MST_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_i2c_master_mode_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_USER_CTRL,
-    MPU6050_USERCTRL_I2C_MST_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_USER_CTRL,
+        MPU6050_USERCTRL_I2C_MST_EN_BIT,
+        enabled
+    );
 }
 
 void mpu6050_switch_spie_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_USER_CTRL,
-    MPU6050_USERCTRL_I2C_IF_DIS_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_USER_CTRL,
+        MPU6050_USERCTRL_I2C_IF_DIS_BIT,
+        enabled
+    );
 }
 
 void mpu6050_reset_fifo()
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_USER_CTRL,
-    MPU6050_USERCTRL_FIFO_RESET_BIT, 1);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_USER_CTRL,
+        MPU6050_USERCTRL_FIFO_RESET_BIT,
+        1
+    );
 }
 
 void mpu6050_reset_sensors()
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_USER_CTRL,
-    MPU6050_USERCTRL_SIG_COND_RESET_BIT, 1);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_USER_CTRL,
+        MPU6050_USERCTRL_SIG_COND_RESET_BIT,
+        1
+    );
 }
 
 void mpu6050_reset()
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_1,
-    MPU6050_PWR1_DEVICE_RESET_BIT, 1);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_1,
+        MPU6050_PWR1_DEVICE_RESET_BIT,
+        1
+    );
 }
 
 bool mpu6050_get_sleep_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_1,
-    MPU6050_PWR1_SLEEP_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_1,
+        MPU6050_PWR1_SLEEP_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_sleep_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_1,
-    MPU6050_PWR1_SLEEP_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_1,
+        MPU6050_PWR1_SLEEP_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_wake_cycle_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_1,
-    MPU6050_PWR1_CYCLE_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_1,
+        MPU6050_PWR1_CYCLE_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_wake_cycle_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_1,
-    MPU6050_PWR1_CYCLE_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_1,
+        MPU6050_PWR1_CYCLE_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_temp_sensor_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_1,
-    MPU6050_PWR1_TEMP_DIS_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_1,
+        MPU6050_PWR1_TEMP_DIS_BIT,
+        buffer
+    );
 
     return (buffer[0] == 0);
 }
 
 void mpu6050_set_temp_sensor_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_1,
-    MPU6050_PWR1_TEMP_DIS_BIT, !enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_1,
+        MPU6050_PWR1_TEMP_DIS_BIT,
+        !enabled
+    );
 }
 
 uint8_t mpu6050_get_clock_source()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_1,
-    MPU6050_PWR1_CLKSEL_BIT, MPU6050_PWR1_CLKSEL_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_1,
+        MPU6050_PWR1_CLKSEL_BIT,
+        MPU6050_PWR1_CLKSEL_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_clock_source(uint8_t source)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_1,
-    MPU6050_PWR1_CLKSEL_BIT, MPU6050_PWR1_CLKSEL_LENGTH, source);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_1,
+        MPU6050_PWR1_CLKSEL_BIT,
+        MPU6050_PWR1_CLKSEL_LENGTH,
+        source
+    );
 }
 
 uint8_t mpu6050_get_wake_frequency()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_LP_WAKE_CTRL_BIT, MPU6050_PWR2_LP_WAKE_CTRL_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_LP_WAKE_CTRL_BIT,
+        MPU6050_PWR2_LP_WAKE_CTRL_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_wake_frequency(uint8_t frequency)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_LP_WAKE_CTRL_BIT, MPU6050_PWR2_LP_WAKE_CTRL_LENGTH, frequency);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_LP_WAKE_CTRL_BIT,
+        MPU6050_PWR2_LP_WAKE_CTRL_LENGTH,
+        frequency
+    );
 }
 
 bool mpu6050_get_standby_x_accel_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_XA_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_XA_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_standby_x_accel_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_XA_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_XA_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_standby_y_accel_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_YA_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_YA_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_standby_y_accel_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_YA_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_YA_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_standby_z_accel_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_ZA_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_ZA_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_standby_z_accel_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_ZA_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_ZA_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_standby_x_gyro_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_XG_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_XG_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_standby_x_gyro_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_XG_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_XG_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_standby_y_gyro_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_YG_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_YG_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_standby_y_gyro_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_YG_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_YG_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_standby_z_gyro_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_ZG_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_ZG_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_standby_z_gyro_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_PWR_MGMT_2,
-    MPU6050_PWR2_STBY_ZG_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_PWR_MGMT_2,
+        MPU6050_PWR2_STBY_ZG_BIT,
+        enabled
+    );
 }
 
 uint16_t mpu6050_get_fifo_count()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_FIFO_COUNTH, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_COUNTH,
+        2,
+        buffer
+    );
 
     return ((((uint16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 uint8_t mpu6050_get_fifo_byte()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_FIFO_R_W, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_R_W,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_get_fifo_bytes(uint8_t *data, uint8_t length)
 {
-    if (length > 0)
-        esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_FIFO_R_W, length, data);
+    if (length > 0) {
+        esp32_i2c_read_bytes
+        (
+            mpu6050_device_address,
+            MPU6050_REGISTER_FIFO_R_W,
+            length,
+            data
+        );
+    }
     else
         *data = 0;
 }
 
 void mpu6050_set_fifo_byte(uint8_t data)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_FIFO_R_W, data);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_FIFO_R_W,
+        data
+    );
 }
 
 uint8_t mpu6050_get_device_id()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_WHO_AM_I,
-    MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_WHO_AM_I,
+        MPU6050_WHO_AM_I_BIT,
+        MPU6050_WHO_AM_I_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_device_id(uint8_t id)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_WHO_AM_I,
-    MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH, id);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_WHO_AM_I,
+        MPU6050_WHO_AM_I_BIT,
+        MPU6050_WHO_AM_I_LENGTH,
+        id
+    );
 }
 
 uint8_t mpu6050_get_otp_bank_valid()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_XG_OFFS_TC,
-    MPU6050_TC_OTP_BNK_VLD_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_XG_OFFS_TC,
+        MPU6050_TC_OTP_BNK_VLD_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_otp_bank_valid(int8_t enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_XG_OFFS_TC,
-    MPU6050_TC_OTP_BNK_VLD_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_XG_OFFS_TC,
+        MPU6050_TC_OTP_BNK_VLD_BIT,
+        enabled
+    );
 }
 
 int8_t mpu6050_get_x_gyro_offset_tc()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_XG_OFFS_TC,
-    MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_XG_OFFS_TC,
+        MPU6050_TC_OFFSET_BIT,
+        MPU6050_TC_OFFSET_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_x_gyro_offset_tc(int8_t offset)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_XG_OFFS_TC,
-    MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_XG_OFFS_TC,
+        MPU6050_TC_OFFSET_BIT,
+        MPU6050_TC_OFFSET_LENGTH,
+        offset
+    );
 }
 
 int8_t mpu6050_get_y_gyro_offset_tc()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_YG_OFFS_TC,
-    MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_YG_OFFS_TC,
+        MPU6050_TC_OFFSET_BIT,
+        MPU6050_TC_OFFSET_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_y_gyro_offset_tc(int8_t offset)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_YG_OFFS_TC,
-    MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_YG_OFFS_TC,
+        MPU6050_TC_OFFSET_BIT,
+        MPU6050_TC_OFFSET_LENGTH,
+        offset
+    );
 }
 
 int8_t mpu6050_get_z_gyro_offset_tc()
 {
-    esp32_i2c_read_bits(mpu6050_device_address, MPU6050_REGISTER_ZG_OFFS_TC,
-    MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, buffer);
+    esp32_i2c_read_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ZG_OFFS_TC,
+        MPU6050_TC_OFFSET_BIT,
+        MPU6050_TC_OFFSET_LENGTH,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_z_gyro_offset_tc(int8_t offset)
 {
-    esp32_i2c_write_bits(mpu6050_device_address, MPU6050_REGISTER_ZG_OFFS_TC,
-    MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
+    esp32_i2c_write_bits
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ZG_OFFS_TC,
+        MPU6050_TC_OFFSET_BIT,
+        MPU6050_TC_OFFSET_LENGTH,
+        offset
+    );
 }
 
 int8_t mpu6050_get_x_fine_gain()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_X_FINE_GAIN, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_X_FINE_GAIN,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_x_fine_gain(int8_t gain)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_X_FINE_GAIN, gain);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_X_FINE_GAIN,
+        gain
+    );
 }
 
 int8_t mpu6050_get_y_fine_gain()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_Y_FINE_GAIN, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_Y_FINE_GAIN,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_y_fine_gain(int8_t gain)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_Y_FINE_GAIN, gain);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_Y_FINE_GAIN,
+        gain
+    );
 }
 
 int8_t mpu6050_get_z_fine_gain()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_Z_FINE_GAIN, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_Z_FINE_GAIN,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_z_fine_gain(int8_t gain)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_Z_FINE_GAIN, gain);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_Z_FINE_GAIN,
+        gain
+    );
 }
 
 int16_t mpu6050_get_x_accel_offset()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_XA_OFFS_H, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_XA_OFFS_H,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 void mpu6050_set_x_accel_offset(int16_t offset)
 {
-    esp32_i2c_write_word(mpu6050_device_address, MPU6050_REGISTER_XA_OFFS_H, offset);
+    esp32_i2c_write_word
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_XA_OFFS_H,
+        offset
+    );
 }
 
 int16_t mpu6050_get_y_accel_offset()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_YA_OFFS_H, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_YA_OFFS_H,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 void mpu6050_set_y_accel_offset(int16_t offset)
 {
-    esp32_i2c_write_word(mpu6050_device_address, MPU6050_REGISTER_YA_OFFS_H, offset);
+    esp32_i2c_write_word
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_YA_OFFS_H,
+        offset
+    );
 }
 
 int16_t mpu6050_get_z_accel_offset()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_ZA_OFFS_H, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ZA_OFFS_H,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 void mpu6050_set_z_accel_offset(int16_t offset)
 {
-    esp32_i2c_write_word(mpu6050_device_address, MPU6050_REGISTER_ZA_OFFS_H, offset);
+    esp32_i2c_write_word
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ZA_OFFS_H,
+        offset
+    );
 }
 
 int16_t mpu6050_get_x_gyro_offset()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_XG_OFFS_USRH, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_XG_OFFS_USRH,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 void mpu6050_set_x_gyro_offset(int16_t offset)
 {
-    esp32_i2c_write_word(mpu6050_device_address, MPU6050_REGISTER_XG_OFFS_USRH,
-    offset);
+    esp32_i2c_write_word
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_XG_OFFS_USRH,
+        offset
+    );
 }
 
 int16_t mpu6050_get_y_gyro_offset()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_YG_OFFS_USRH, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_YG_OFFS_USRH,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 void mpu6050_set_y_gyro_offset(int16_t offset)
 {
-    esp32_i2c_write_word(mpu6050_device_address, MPU6050_REGISTER_YG_OFFS_USRH,
-    offset);
+    esp32_i2c_write_word
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_YG_OFFS_USRH,
+        offset
+    );
 }
 
 int16_t mpu6050_get_z_gyro_offset()
 {
-    esp32_i2c_read_bytes(mpu6050_device_address, MPU6050_REGISTER_ZG_OFFS_USRH, 2,
-    buffer);
+    esp32_i2c_read_bytes
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ZG_OFFS_USRH,
+        2,
+        buffer
+    );
 
     return ((((int16_t) buffer[0]) << 8) | buffer[1]);
 }
 
 void mpu6050_set_z_gyro_offset(int16_t offset)
 {
-    esp32_i2c_write_word(mpu6050_device_address, MPU6050_REGISTER_ZG_OFFS_USRH,
-    offset);
+    esp32_i2c_write_word
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_ZG_OFFS_USRH,
+        offset
+    );
 }
 
 bool mpu6050_get_int_pll_ready_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_PLL_RDY_INT_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_PLL_RDY_INT_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_int_pll_ready_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_PLL_RDY_INT_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_PLL_RDY_INT_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_int_dmp_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_DMP_INT_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_DMP_INT_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_int_dmp_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_INT_ENABLE,
-    MPU6050_INTERRUPT_DMP_INT_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_ENABLE,
+        MPU6050_INTERRUPT_DMP_INT_BIT,
+        enabled
+    );
 }
 
 bool mpu6050_get_dmp_int_5_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_DMP_INT_STATUS,
-    MPU6050_DMPINT_5_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_DMP_INT_STATUS,
+        MPU6050_DMPINT_5_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_dmp_int_4_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_DMP_INT_STATUS,
-    MPU6050_DMPINT_4_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_DMP_INT_STATUS,
+        MPU6050_DMPINT_4_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_dmp_int_3_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_DMP_INT_STATUS,
-    MPU6050_DMPINT_3_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_DMP_INT_STATUS,
+        MPU6050_DMPINT_3_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_dmp_int_2_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_DMP_INT_STATUS,
-    MPU6050_DMPINT_2_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_DMP_INT_STATUS,
+        MPU6050_DMPINT_2_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_dmp_int_1_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_DMP_INT_STATUS,
-    MPU6050_DMPINT_1_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_DMP_INT_STATUS,
+        MPU6050_DMPINT_1_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_dmp_int_0_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_DMP_INT_STATUS,
-    MPU6050_DMPINT_0_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_DMP_INT_STATUS,
+        MPU6050_DMPINT_0_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_int_ppl_ready_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_STATUS,
-    MPU6050_INTERRUPT_PLL_RDY_INT_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_STATUS,
+        MPU6050_INTERRUPT_PLL_RDY_INT_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_int_dmp_status()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_INT_STATUS,
-    MPU6050_INTERRUPT_DMP_INT_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_INT_STATUS,
+        MPU6050_INTERRUPT_DMP_INT_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 bool mpu6050_get_dmp_enabled()
 {
-    esp32_i2c_read_bit(mpu6050_device_address, MPU6050_REGISTER_USER_CTRL,
-    MPU6050_USERCTRL_DMP_EN_BIT, buffer);
+    esp32_i2c_read_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_USER_CTRL,
+        MPU6050_USERCTRL_DMP_EN_BIT,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_dmp_enabled(bool enabled)
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_USER_CTRL,
-    MPU6050_USERCTRL_DMP_EN_BIT, enabled);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_USER_CTRL,
+        MPU6050_USERCTRL_DMP_EN_BIT,
+        enabled
+    );
 }
 
 void mpu6050_reset_dmp()
 {
-    esp32_i2c_write_bit(mpu6050_device_address, MPU6050_REGISTER_USER_CTRL,
-    MPU6050_USERCTRL_DMP_RESET_BIT, 1);
+    esp32_i2c_write_bit
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_USER_CTRL,
+        MPU6050_USERCTRL_DMP_RESET_BIT,
+        1
+    );
 }
 
 uint8_t mpu6050_get_dmp_config_1()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_DMP_CFG_1, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_DMP_CFG_1,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_dmp_config_1(uint8_t config)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_DMP_CFG_1, config);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_DMP_CFG_1,
+        config
+    );
 }
 
 uint8_t mpu6050_get_dmp_config_2()
 {
-    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_DMP_CFG_2, buffer);
+    esp32_i2c_read_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_DMP_CFG_2,
+        buffer
+    );
 
     return (buffer[0]);
 }
 
 void mpu6050_set_dmp_config_2(uint8_t config)
 {
-    esp32_i2c_write_byte(mpu6050_device_address, MPU6050_REGISTER_DMP_CFG_2, config);
+    esp32_i2c_write_byte
+    (
+        mpu6050_device_address,
+        MPU6050_REGISTER_DMP_CFG_2,
+        config
+    );
 }
 
 float mpu6050_get_accel_res(uint8_t accel_scale)
@@ -2042,9 +3409,6 @@ void mpu6050_self_test(float *destination)
     mpu6050_set_accel_y_self_test(true);
     mpu6050_set_accel_z_self_test(true);
     mpu6050_set_full_scale_accel_range(MPU6050_ACCEL_FULL_SCALE_RANGE_8);
-    //mpu6050_set_gyro_x_self_test(true);
-    //mpu6050_set_gyro_y_self_test(true);
-    //mpu6050_set_gyro_z_self_test(true);
     mpu6050_set_full_scale_gyro_range(MPU6050_GYRO_FULL_SCALE_RANGE_250);
 
     self_test[0] = mpu6050_get_accel_x_self_test_factory_trim();
