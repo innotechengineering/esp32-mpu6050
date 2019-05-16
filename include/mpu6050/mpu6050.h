@@ -15,13 +15,13 @@
 #define MPU6050_H
 
 #include <math.h>
-#include "esp32_i2c_rw/esp32_i2c_rw.h"
+#include "esp32-i2c_rw/esp32_i2c_rw.h"
 #include "mpu6050_registers.h"
 
 // Address of MPU6050 (Can be 0x68 or 0x69):
-#define MPU6050_ADDRESS_LOW                 0x68 // Address pin low (GND).
-#define MPU6050_ADDRESS_HIGH                0x69 // Address pin high (VCC).
-#define MPU6050_DEVICE                      MPU6050_ADDRESS_LOW
+#define MPU6050_ADDRESS_LOW     0x68 // Address pin low (GND).
+#define MPU6050_ADDRESS_HIGH    0x69 // Address pin high (VCC).
+#define MPU6050_DEVICE          MPU6050_ADDRESS_LOW
 
 typedef struct _mpu6050_acceleration_t
 {
@@ -1537,7 +1537,11 @@ int16_t mpu6050_get_rotation_z();
  * @param data_accel pointer to acceleration struct.
  * @param data_gyro pointer to rotation struct.
  */
-void mpu6050_get_motion(mpu6050_acceleration_t* data_accel, mpu6050_rotation_t* data_gyro);
+void mpu6050_get_motion
+(
+    mpu6050_acceleration_t* data_accel,
+    mpu6050_rotation_t* data_gyro
+);
 
 /**
  * @brief Read single byte from external sensor data register.
