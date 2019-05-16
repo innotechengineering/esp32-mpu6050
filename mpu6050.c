@@ -16,11 +16,11 @@
 
 const char *TAG_MPU6050 = "MPU6050";
 
-#define PI              3.14159265358979323846f
-#define GYRO_MEAS_ERROR PI * (60.0f / 180.0f)
-#define GYRO_MEAS_DRIFT PI * (1.0f / 180.0f)
-#define BETA            sqrt(3.0f / 4.0f) * GYRO_MEAS_ERROR
-#define ZETA            sqrt(3.0f / 4.0f) * GYRO_MEAS_DRIFT
+#define PI              (3.14159265358979323846f)
+#define GYRO_MEAS_ERROR (PI * (60.0f / 180.0f))
+#define GYRO_MEAS_DRIFT (PI * (1.0f / 180.0f))
+#define BETA            (sqrt(3.0f / 4.0f) * GYRO_MEAS_ERROR)
+#define ZETA            (sqrt(3.0f / 4.0f) * GYRO_MEAS_DRIFT)
 
 float quart[4] = {1.0f, 0.0f, 0.0f, 0.0f};
 float delta_t = 0.0f;
