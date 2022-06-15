@@ -21,7 +21,7 @@
 // Address of MPU6050 (Can be 0x68 or 0x69):
 #define MPU6050_ADDRESS_LOW     0x68 // Address pin low (GND).
 #define MPU6050_ADDRESS_HIGH    0x69 // Address pin high (VCC).
-#define MPU6050_DEVICE          MPU6050_ADDRESS_LOW
+// #define MPU6050_DEVICE          MPU6050_ADDRESS_LOW
 
 typedef struct _mpu6050_acceleration_t
 {
@@ -42,8 +42,17 @@ uint8_t buffer[14];
 
 /**
  * @brief MPU6050 constructor.
+ * 
+ * @param address The address of the MPU6050 device, either MPU6050_ADDRESS_LOW or MPU6050_ADDRESS_HIGH.
  */
-void mpu6050_init();
+void mpu6050_init(uint8_t address);
+
+/**
+ * @brief Sets the MPU6050 device address.
+ * 
+ * @param address The address of the MPU6050 device, either MPU6050_ADDRESS_LOW or MPU6050_ADDRESS_HIGH.
+ */
+void mpu6050_set_device_address(uint8_t address);
 
 /**
  * @brief Verify the I2C connection. Make sure the device is connected and

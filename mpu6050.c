@@ -27,13 +27,17 @@ float delta_t = 0.0f;
 float pitch, yaw, roll;
 int last_update = 0, first_update = 0, now = 0;
 
-void mpu6050_init()
+void mpu6050_init(uint8_t address)
 {
-    mpu6050_device_address = MPU6050_DEVICE;
+    mpu6050_set_device_address(address);
     mpu6050_set_clock_source(MPU6050_CLOCK_PLL_XGYRO);
     mpu6050_set_full_scale_gyro_range(MPU6050_GYRO_FULL_SCALE_RANGE_250);
     mpu6050_set_full_scale_accel_range(MPU6050_ACCEL_FULL_SCALE_RANGE_2);
     mpu6050_set_sleep_enabled(0);
+}
+
+void mpu6050_set_device_address(uint8_t address) {
+    mpu6050_device_address = address;
 }
 
 bool mpu6050_test_connection()
