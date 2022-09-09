@@ -2228,13 +2228,22 @@ bool mpu6050_get_fifo_enabled()
 
 void mpu6050_set_fifo_enabled(bool enabled)
 {
-    esp32_i2c_write_bit
-    (
-        mpu6050_device_address,
-        MPU6050_REGISTER_USER_CTRL,
-        MPU6050_USERCTRL_FIFO_EN_BIT,
-        enabled
-    );
+    if (!enabled) {
+        esp32_i2c_write_bit
+        (
+            mpu6050_device_address,
+            MPU6050_REGISTER_USER_CTRL,
+            MPU6050_USERCTRL_FIFO_EN_BIT,
+            enabled
+        );
+    } else {
+        // reset the fifo as well (bit 2)
+        esp32_i2c_write_byte(
+            mpu6050_device_address,
+            MPU6050_REGISTER_USER_CTRL,
+            0b01000100
+        );
+    }
 }
 
 bool mpu6050_get_i2c_master_mode_enabled()
@@ -2575,15 +2584,10 @@ void mpu6050_set_standby_z_gyro_enabled(bool enabled)
 
 uint16_t mpu6050_get_fifo_count()
 {
-    esp32_i2c_read_bytes
-    (
-        mpu6050_device_address,
-        MPU6050_REGISTER_FIFO_COUNTH,
-        2,
-        buffer
-    );
-
-    return ((((uint16_t) buffer[0]) << 8) | buffer[1]);
+    uint8_t counth = 0, countl = 0;
+    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_FIFO_COUNTH, &counth);
+    esp32_i2c_read_byte(mpu6050_device_address, MPU6050_REGISTER_FIFO_COUNTL, &countl);
+    return ((counth << 8) | countl);
 }
 
 uint8_t mpu6050_get_fifo_byte()
