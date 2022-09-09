@@ -3248,7 +3248,7 @@ void mpu6050_calibrate(float *accel_bias_res, float *gyro_bias_res)
     uint8_t tmp_data[12];
     uint16_t packet_count;
   
-    mpu6050_reset();
+    // mpu6050_reset();
     vTaskDelay(100 / portTICK_PERIOD_MS);
 
     mpu6050_set_clock_source(MPU6050_CLOCK_PLL_XGYRO);
@@ -3285,6 +3285,7 @@ void mpu6050_calibrate(float *accel_bias_res, float *gyro_bias_res)
     mpu6050_set_z_gyro_fifo_enabled(1);
     mpu6050_set_y_gyro_fifo_enabled(1);
     mpu6050_set_x_gyro_fifo_enabled(1);
+    mpu6050_set_temp_fifo_enabled(0); 
     vTaskDelay(80 / portTICK_PERIOD_MS); // Accumulate 80 samples in 80 ms.
  
     // At end of sample accumulation, turn off FIFO sensor read:
