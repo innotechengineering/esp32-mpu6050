@@ -22,10 +22,6 @@ const char *TAG_MPU6050 = "MPU6050";
 #define BETA            (sqrt(3.0f / 4.0f) * GYRO_MEAS_ERROR)
 #define ZETA            (sqrt(3.0f / 4.0f) * GYRO_MEAS_DRIFT)
 
-float quart[4] = {1.0f, 0.0f, 0.0f, 0.0f};
-float delta_t = 0.0f;
-float pitch, yaw, roll;
-int last_update = 0, first_update = 0, now = 0;
 
 void mpu6050_init(uint8_t address)
 {
@@ -3444,6 +3440,8 @@ void mpu6050_self_test(float *destination)
 
 void mpu6050_madgwick_quaternion_update
 (
+    float delta_t,
+    float quart[4],
     float accel_x,
     float accel_y,
     float accel_z,
