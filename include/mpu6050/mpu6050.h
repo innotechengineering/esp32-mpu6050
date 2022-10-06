@@ -2273,7 +2273,7 @@ void mpu6050_set_dmp_config_2(uint8_t config);
  * 
  * @return Resolution of the acceleration.
  */
-float mpu6050_get_accel_res(uint8_t accel_scale);
+uint16_t mpu6050_get_accel_divisor(uint8_t accel_scale);
 
 /**
  * @brief Calculates rotation resolution.

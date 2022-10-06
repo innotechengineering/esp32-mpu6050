@@ -3186,26 +3186,21 @@ void mpu6050_set_dmp_config_2(uint8_t config)
     );
 }
 
-float mpu6050_get_accel_res(uint8_t accel_scale)
+uint16_t mpu6050_get_accel_divisor(uint8_t accel_scale)
 {
-    float accel_res = 0;
-
     switch (accel_scale) {
-        case 0:
-            accel_res = 2.0 / 32768.0;
+        case MPU6050_ACCEL_FULL_SCALE_RANGE_2:
+            return 32768 / 2;
+        case MPU6050_ACCEL_FULL_SCALE_RANGE_4:
+            return 32768 / 4;
             break;
-        case 1:
-            accel_res = 4.0 / 32768.0;
-            break;
-        case 2:
-            accel_res = 8.0 / 32768.0;
-            break;
-        case 3:
-            accel_res = 16.0 / 32768.0;
-            break;
+        case MPU6050_ACCEL_FULL_SCALE_RANGE_8:
+            return 32768 / 8;
+        case MPU6050_ACCEL_FULL_SCALE_RANGE_16:
+            return 32768 / 16;
     }
 
-    return (accel_res);
+    return 1;
 }
 
 float mpu6050_get_gyro_res(uint8_t gyro_scale)
@@ -3454,8 +3449,8 @@ void mpu6050_madgwick_quaternion_update
     float j_11o24, j_12o23, j_13o22, j_14o21, j_32, j_33;
     float q_dot_1, q_dot_2, q_dot_3, q_dot_4;
     float hat_dot_1, hat_dot_2, hat_dot_3, hat_dot_4;
-    float gyro_x_err, gyro_y_err, gyro_z_err;
-    float gyro_x_bias, gyro_y_bias, gyro_z_bias;
+    float gyro_x_err = 0, gyro_y_err = 0, gyro_z_err = 0;
+    float gyro_x_bias = 0, gyro_y_bias = 0, gyro_z_bias = 0;
     float norm;
  
     float half_q1 = 0.5f * quart[0];
